@@ -8,4 +8,10 @@ export type Balance = {
   total: number;
   stock: number;
 };
+
+export enum Status {
+  Start = 0,
+  Playing = 1,
+  End = 2,
+}
   

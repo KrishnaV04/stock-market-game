@@ -1,1 +1,1 @@
-export const totalTurns = 30;
+export const totalTurns = 15;
