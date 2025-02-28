@@ -3,6 +3,7 @@ import StartGameButton from "./StartGameButton";
 import { useEffect, useMemo, useState } from "react";
 import { StockData, Balance, Status } from "./types";
 import { totalTurns } from "./constants";
+import DataDisplay from "./DataDisplay";
 
 function Game() {
   const [completeData, setCompleteData] = useState<StockData[]>([]); // stock data
@@ -10,7 +11,6 @@ function Game() {
   const [gameStatus, setGameStatus] = useState<Status>(Status.Start);
   const [balance, setBalance] = useState<Balance>({
     cash: 100000,
-    total: 100000,
     stock: 0,
   });
   const startIndex = useMemo(() => {
@@ -21,7 +21,7 @@ function Game() {
   const curPrice = startIndex !== 0 ? completeData[startIndex + turn]?.y[3] : 0;
 
   useEffect(() => {
-    fetch("/AAPL_formatted_stock_data.json")
+    fetch("/Stock-Market-Game/AAPL_formatted_stock_data.json")
       .then((response) => response.json())
       .then((rawData) => {
         const formattedData: StockData[] = rawData.map((entry: StockData) => ({
@@ -38,7 +38,7 @@ function Game() {
   };
 
   const handleBuy = () => {
-    const stocks = (balance.cash * 0.1) / curPrice;
+    const stocks = (balance.cash * 0.5) / curPrice;
     setBalance({
       ...balance,
       stock: balance.stock + stocks,
@@ -77,15 +77,19 @@ function Game() {
   }
 
   return (
-    <div className="container d-flex flex-column justify-content-center align-items-center vh-100">
+    <div className="container mt-5 d-flex flex-column justify-content-center align-items-center vh-100">
       <h4>Mystery S&P 500 Stock</h4>
       <StockChart
         startIndex={startIndex - 10}
         endIndex={turn + startIndex + 1}
         allData={completeData}
       />
-      <h4>Turn: {turn}</h4>
-      <h4>Cash Balance: ${balance.cash.toFixed(2)}</h4>
+      <DataDisplay
+        cashBalance={balance.cash}
+        stockBalance={balance.stock}
+        totalMoney={balance.cash + balance.stock * curPrice}
+        netGain={balance.cash + balance.stock * curPrice - 100000}
+      />
       <div className="d-flex justify-content-center gap-3 mt-3">
         <button
           className="btn btn-success"
@@ -121,8 +125,13 @@ function Game() {
         className="mt-5 text-start"
         style={{ maxWidth: "1000px", marginLeft: "auto", marginRight: "auto" }}
       >
-        <h4 className="fw-bold">About</h4>
+        <h4 className="fw-bold">Instructions & About</h4>
         <p className="text-muted">
+          When you buy shares you will be spending 50% of your cash balance to
+          buy, and when you sell shares all your stock balance will be sold. Try
+          to make the most profit within {totalTurns} turns.
+          <br></br>
+          <br></br>
           This beta version of the stock market trading game simulates a random
           S&P 500 stock. Buy, hold, or sell shares as the market fluctuates
           using data from a mystery S&P 500 stock. Note: The game is still under

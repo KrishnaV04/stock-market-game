@@ -5,7 +5,6 @@ export type StockData = {
 
 export type Balance = {
   cash: number;
-  total: number;
   stock: number;
 };
 
