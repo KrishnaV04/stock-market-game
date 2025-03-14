@@ -1,5 +1,5 @@
 {
-  "homepage": "https://krishnav04.github.io/Stock-Market-Game",
+  "homepage": "https://krishnav04.github.io/stock-market-game",
   "name": "stock-trading-game",
   "private": true,
   "version": "0.0.0",
@@ -16,6 +16,7 @@
     "apexcharts": "^4.4.0",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
+    "firebase": "^11.4.0",
     "react": "^19.0.0",
     "react-apexcharts": "^1.7.0",
     "react-dom": "^19.0.0"
