@@ -13,6 +13,7 @@ function Game() {
     cash: 100000,
     stock: 0,
   });
+
   const startIndex = useMemo(() => {
     return completeData.length > 0
       ? Math.floor(Math.random() * (completeData.length - totalTurns - 10) + 10)
@@ -21,7 +22,7 @@ function Game() {
   const curPrice = startIndex !== 0 ? completeData[startIndex + turn]?.y[3] : 0;
 
   useEffect(() => {
-    fetch("/Stock-Market-Game/AAPL_formatted_stock_data.json")
+    fetch("/AAPL_formatted_stock_data.json")
       .then((response) => response.json())
       .then((rawData) => {
         const formattedData: StockData[] = rawData.map((entry: StockData) => ({

@@ -22,7 +22,7 @@ const DataDisplay: React.FC<DataDisplayProps> = ({
         <div className="row">
           <div className="col-6">
             <h6 className="text-muted">Cash Balance</h6>
-            <h5 className="fw-bold text-success">${cashBalance.toFixed(2)}</h5>
+            <h5 className="fw-bold">${cashBalance.toFixed(2)}</h5>
           </div>
           <div className="col-6">
             <h6 className="text-muted">Stock Balance</h6>
@@ -33,8 +33,14 @@ const DataDisplay: React.FC<DataDisplayProps> = ({
         </div>
         <div className="row">
           <div className="col-6">
-            <h6 className="text-muted">Total Money</h6>
-            <h5 className="fw-bold text-dark">${totalMoney.toFixed(2)}</h5>
+            <h6 className="text-muted">Total Balance</h6>
+            <h5
+              className={`fw-bold ${
+                netGain >= 0 ? "text-success" : "text-danger"
+              }`}
+            >
+              ${totalMoney.toFixed(2)}
+            </h5>
           </div>
           <div className="col-6">
             <h6 className="text-muted">Net Gain</h6>
