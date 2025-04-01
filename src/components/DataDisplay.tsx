@@ -1,12 +1,11 @@
 import React from "react";
-import { totalTurns } from "./constants";
+// import { totalTurns } from "./constants";
 
 interface DataDisplayProps {
   cashBalance: number;
   stockBalance: number;
   totalMoney: number;
   netGain: number;
-  turn: number;
 }
 
 const DataDisplay: React.FC<DataDisplayProps> = ({
@@ -14,7 +13,6 @@ const DataDisplay: React.FC<DataDisplayProps> = ({
   stockBalance,
   totalMoney,
   netGain,
-  turn,
 }) => {
   return (
     <div

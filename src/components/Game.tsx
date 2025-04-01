@@ -22,8 +22,18 @@ function Game() {
   }, [completeData]);
   const curPrice = startIndex !== 0 ? completeData[startIndex + turn]?.y[3] : 0;
 
+  const getJsonFilePath = () => {
+    if (process.env.NODE_ENV === "development") {
+      // Local development environment: fetch from relative path
+      return "/AAPL_formatted_stock_data.json";
+    } else {
+      // Production (GitHub Pages): fetch from the full URL
+      return `${process.env.PUBLIC_URL}/AAPL_formatted_stock_data.json`;
+    }
+  };
+
   useEffect(() => {
-    fetch("/AAPL_formatted_stock_data.json")
+    fetch(getJsonFilePath())
       .then((response) => response.json())
       .then((rawData) => {
         const formattedData: StockData[] = rawData.map((entry: StockData) => ({
@@ -98,7 +108,6 @@ function Game() {
         <DataDisplay
           cashBalance={balance.cash}
           stockBalance={balance.stock}
-          turn={turn}
           totalMoney={balance.cash + balance.stock * curPrice}
           netGain={balance.cash + balance.stock * curPrice - 100000}
         />
