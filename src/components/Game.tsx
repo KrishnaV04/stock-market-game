@@ -8,6 +8,7 @@ import DataDisplay from "./DataDisplay";
 function Game() {
   const [completeData, setCompleteData] = useState<StockData[]>([]); // stock data
   const [turn, setTurn] = useState(0); // turn number
+  const [percent, setPercent] = useState(50);
   const [gameStatus, setGameStatus] = useState<Status>(Status.Start);
   const [balance, setBalance] = useState<Balance>({
     cash: 100000,
@@ -38,29 +39,30 @@ function Game() {
     setTurn((turn) => (turn < totalTurns ? turn + 1 : turn));
   };
 
-  const handleBuy = () => {
-    const stocks = (balance.cash * 0.5) / curPrice;
+  const handleBuy = (percent: number) => {
+    const shares = ((percent / 100) * balance.cash) / curPrice;
     setBalance({
       ...balance,
-      stock: balance.stock + stocks,
-      cash: balance.cash - stocks * curPrice,
+      stock: balance.stock + shares,
+      cash: balance.cash - shares * curPrice,
     });
-    console.log(`Buying ${stocks} shares at ${curPrice} each`);
+    console.log(`Buying ${shares} shares at ${curPrice} each`);
   };
 
-  const handleSell = () => {
-    console.log(`Selling ${balance.stock} shares at ${curPrice} each`);
+  const handleSell = (percent: number) => {
+    const shares = (percent / 100) * balance.stock;
+    console.log(`Selling ${shares} shares at ${curPrice} each`);
     setBalance({
       ...balance,
-      cash: balance.cash + balance.stock * curPrice,
-      stock: 0,
+      cash: balance.cash + shares * curPrice,
+      stock: balance.stock - shares,
     });
   };
 
   if (turn === totalTurns && gameStatus !== Status.End) {
     setGameStatus(Status.End);
     console.log(`Selling all holdings`);
-    balance.stock !== 0 ? handleSell() : null;
+    balance.stock !== 0 ? handleSell(100) : null;
   }
 
   if (gameStatus == Status.Start) {
@@ -78,55 +80,89 @@ function Game() {
   }
 
   return (
-    <div className="container mt-5 d-flex flex-column justify-content-center align-items-center vh-100">
+    <div className="container mt-5 d-flex flex-column justify-content-start align-items-center vh-100">
       <h4>Mystery S&P 500 Stock</h4>
       <StockChart
         startIndex={startIndex - 10}
         endIndex={turn + startIndex + 1}
         allData={completeData}
       />
-      <DataDisplay
-        cashBalance={balance.cash}
-        stockBalance={balance.stock}
-        totalMoney={balance.cash + balance.stock * curPrice}
-        netGain={balance.cash + balance.stock * curPrice - 100000}
-      />
-      <div className="d-flex justify-content-center gap-3 mt-3">
-        <button
-          className="btn btn-success"
-          onClick={() => {
-            handleBuy();
-            incrementGameTime();
-          }}
-          disabled={gameStatus === Status.End}
-        >
-          Buy Shares
-        </button>
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            incrementGameTime();
-          }}
-          disabled={gameStatus === Status.End}
-        >
-          Hold Shares
-        </button>
-        <button
-          className="btn btn-danger"
-          onClick={() => {
-            handleSell();
-            incrementGameTime();
-          }}
-          disabled={gameStatus === Status.End || balance.stock === 0}
-        >
-          Sell Shares
-        </button>
+      <div className="d-flex flex-row gap-2">
+        <h5 className="text-muted">Turn:</h5>
+        <h5 className="fw-bold">
+          {turn} / {totalTurns}
+        </h5>
       </div>
+
+      <div className="d-flex flex-row align-items-center align-items-start gap-4 mt-4 w-100 justify-content-center">
+        <DataDisplay
+          cashBalance={balance.cash}
+          stockBalance={balance.stock}
+          turn={turn}
+          totalMoney={balance.cash + balance.stock * curPrice}
+          netGain={balance.cash + balance.stock * curPrice - 100000}
+        />
+
+        <div className="d-flex flex-column align-items-center gap-3 mt-3">
+          <label htmlFor="percent-slider" className="mb-2">
+            Choose Percentage: <span className="fw-bold">{percent}%</span>
+          </label>
+          <input
+            type="range"
+            className="form-range"
+            min="10"
+            max="100"
+            step="10"
+            value={percent}
+            onChange={(e) => setPercent(Number(e.target.value))}
+          />
+
+          {/* Action Buttons */}
+          <div className="d-flex justify-content-center  gap-3">
+            <button
+              className="btn btn-success"
+              onClick={() => {
+                handleBuy(percent);
+                incrementGameTime();
+              }}
+              disabled={
+                gameStatus === Status.End || percent === 0 || balance.cash === 0
+              }
+            >
+              Buy Shares
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                incrementGameTime();
+              }}
+              disabled={gameStatus === Status.End}
+            >
+              Hold Shares
+            </button>
+            <button
+              className="btn btn-danger"
+              onClick={() => {
+                handleSell(percent);
+                incrementGameTime();
+              }}
+              disabled={
+                gameStatus === Status.End ||
+                percent === 0 ||
+                balance.stock === 0
+              }
+            >
+              Sell Shares
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div
         className="mt-5 text-start"
         style={{ maxWidth: "1000px", marginLeft: "auto", marginRight: "auto" }}
       >
-        <h4 className="fw-bold">Instructions & About</h4>
+        <h4 className="fw-bold">Instructions</h4>
         <p className="text-muted">
           When you buy shares you will be spending 50% of your cash balance to
           buy, and when you sell shares all your stock balance will be sold. Try

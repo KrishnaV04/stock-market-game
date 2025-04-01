@@ -1,10 +1,12 @@
 import React from "react";
+import { totalTurns } from "./constants";
 
 interface DataDisplayProps {
   cashBalance: number;
   stockBalance: number;
   totalMoney: number;
   netGain: number;
+  turn: number;
 }
 
 const DataDisplay: React.FC<DataDisplayProps> = ({
@@ -12,6 +14,7 @@ const DataDisplay: React.FC<DataDisplayProps> = ({
   stockBalance,
   totalMoney,
   netGain,
+  turn,
 }) => {
   return (
     <div
@@ -19,6 +22,17 @@ const DataDisplay: React.FC<DataDisplayProps> = ({
       style={{ maxWidth: "600px", width: "100%" }}
     >
       <div className="card-body">
+        {/* Turn Counter */}
+        {/* <div className="row mb-3">
+          <div className="col-12">
+            <h6 className="text-muted">Turn</h6>
+            <h5 className="fw-bold">
+              {turn} / {totalTurns}
+            </h5>
+          </div>
+        </div> */}
+
+        {/* Balance Data */}
         <div className="row">
           <div className="col-6">
             <h6 className="text-muted">Cash Balance</h6>
@@ -31,6 +45,8 @@ const DataDisplay: React.FC<DataDisplayProps> = ({
             </h5>
           </div>
         </div>
+
+        {/* Total Balance and Net Gain */}
         <div className="row">
           <div className="col-6">
             <h6 className="text-muted">Total Balance</h6>
